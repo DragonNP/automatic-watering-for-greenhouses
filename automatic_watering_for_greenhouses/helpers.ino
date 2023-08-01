@@ -62,7 +62,7 @@ String format_time_for_lcd(uint32_t tmr) {
 
 void print_new_value(int value, int x, int y) {
   lcd.setCursor(x-1, y);
-  if (value < 9) {
+  if (value < 10) {
     lcd.print(0, DEC);
   }
   lcd.print(value, DEC);

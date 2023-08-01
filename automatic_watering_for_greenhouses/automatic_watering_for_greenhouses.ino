@@ -1,14 +1,12 @@
 #include <Wire.h>
 #define _LCD_TYPE 1
 #include <LCD_1602_RUS_ALL.h>
-#include <EncButton2.h>
 
 // SETTINGS
 #define DHT_PIN A1 // Pin for DHT11 sensor
 #define PUMP_PIN 1 // Pin
 #define BUCK_TEMP_PIN A2 // Pin
 
-EncButton2<EB_ENCBTN> enc(INPUT, 3, 2, 0);  // энкодер с кнопкой <A, B, KEY>
 LCD_1602_RUS lcd(0x3f, 20, 4);
 
 uint32_t tmr_lcd_dsb;
@@ -45,49 +43,28 @@ void setup(){
 }
 
 void loop() {
-  enc.tick();
+  checkEncoder();
 
-  if (curr_page != 0) {
-    RequestTempFromDallas();
-    CheckEncoderForPages();
-    CheckLCD();
-    CheckDisableLCD();
-  }
+  if (curr_page == 0)
+    checkDisableLCD();
   else
-    CheckEncoderForEnableLCD();
+    checkLCD();
 
+  RequestTempFromDallas();
   CheckStartPoliv();
   CheckStopPoliv();
 }
 
-void CheckEncoderForEnableLCD() {
-  if (enc.left() || enc.right() || enc.click()) {
-    curr_page = 1;
-    force_update = true;
-    tmr_lcd_dsb = millis();
+void enableLCD() {
+  curr_page = 1;
+  force_update = true;
+  tmr_lcd_dsb = millis();
 
-    lcd.display();
-    lcd.backlight();
-  }
+  lcd.display();
+  lcd.backlight();
 }
 
-void CheckEncoderForPages() {
-  if (edit_mode) { return; }
-
-  if (enc.click())
-    tmr_lcd_dsb = millis();
-
-  if (enc.left()) {
-    PrevPage();
-    tmr_lcd_dsb = millis();
-  }
-  if (enc.right()) {
-    NextPage();
-    tmr_lcd_dsb = millis();
-  }
-}
-
-void CheckDisableLCD() {
+void checkDisableLCD() {
   if (millis() - tmr_lcd_dsb >= 10000) {
     curr_page = 0;
     tmr_lcd_dsb = millis();
@@ -97,7 +74,7 @@ void CheckDisableLCD() {
   }
 }
 
-void CheckLCD() {
+void checkLCD() {
   static uint32_t tmr_lcd;
   if (millis() - tmr_lcd >= 1000 || curr_page == 2 || curr_page == 3 || force_update) {
     tmr_lcd = millis();
@@ -120,17 +97,11 @@ void update_lcd() {
       ShowPage2();
       force_update = false;
     }
-    else {
-      UpdatePage2();
-    }
   }
   else if (curr_page == 3) {
     if (force_update) {
       ShowPage3();
       force_update = false;
-    }
-    else {
-      UpdatePage3();
     }
   }
 }
