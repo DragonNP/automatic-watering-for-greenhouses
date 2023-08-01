@@ -30,3 +30,17 @@ void CheckStopPoliv() {
     started_poliv = false;
   }
 }
+
+short getStatePump() {
+  // Возвращает: 0 - поливает, 1 - время полива еще не наступило, 2 - Пора поливать, но вода холодная, 3 - неизвестная ошибка
+
+  if (!started_poliv)
+    if (millis() - tmr_poliv_time >= poliv_time && GetTempFromDallas() < temp_water_for_run_pump)
+      return 2;
+    else if (millis() - tmr_poliv_time < poliv_time)
+      return 1;
+    else
+      return 3;
+  else
+    return 0;
+}

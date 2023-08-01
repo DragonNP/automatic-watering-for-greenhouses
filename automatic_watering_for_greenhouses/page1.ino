@@ -2,7 +2,7 @@ void ShowPage1() {
   lcd.clear();
   
   lcd.setCursor(0,0);
-  lcd.print("Temn:    C Бak:    С");
+  lcd.print("Temn:    C БAK:    С");
 
   lcd.setCursor(0,1);
   lcd.print("Bлaж:    %");
@@ -24,5 +24,14 @@ void UpdatePage1() {
   lcd.print(data[1], 1);
 
   lcd.setCursor(0,3);
-  lcd.print(format_time_for_lcd(GetRemainingPoliv()));
+
+  short state = getStatePump();
+  if (state == 0)
+    lcd.print("POLIVAYU       ");
+  else if (state == 1)
+    lcd.print(format_time_for_lcd(GetRemainingPoliv()));
+  else if (state == 2)
+    lcd.print("VODA XOLODHAYA ");
+  else
+    lcd.print("ERROR!!!!      ");
 }

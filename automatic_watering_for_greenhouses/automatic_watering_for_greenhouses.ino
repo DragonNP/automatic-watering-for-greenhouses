@@ -38,7 +38,6 @@ uint8_t poliv_duration_minutes;
 uint8_t poliv_duration_seconds;
 
 void setup(){
-  Serial.println(9600);
   lcd.init();
   lcd.backlight();
 
