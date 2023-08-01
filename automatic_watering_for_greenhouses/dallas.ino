@@ -8,6 +8,6 @@ float GetTempFromDallas() {
   else return 0.0;
 }
 
-void RequestTempFromDallas() {
+void requestTempFromDallas() {
   dallas.requestTemp();
 }

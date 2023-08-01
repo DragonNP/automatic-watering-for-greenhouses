@@ -13,7 +13,7 @@ uint32_t GetRemainingPoliv() {
 void CheckStartPoliv() {
   if (!poliv || started_poliv) { return; }
   
-  if (millis() - tmr_poliv_time >= poliv_time) {
+  if (millis() - tmr_poliv_time >= poliv_time && GetTempFromDallas() >= temp_water_for_run_pump) {
     digitalWrite(PUMP_PIN, LOW);
     tmr_poliv_duration = millis();
     started_poliv = true;

@@ -3,6 +3,7 @@
 #define EEPROM_ADDRESS_POLIV 0
 #define EEPROM_ADDRESS_POLIV_TIME 2
 #define EEPROM_ADDRESS_POLIV_DURATION 8
+#define EEPROM_ADDRESS_TEMP_FOR_POLIV_DURATION 14
 
 void SetupEEPROM() {
   if (EEPROM.read(EEPROM_ADDRESS_POLIV) != 255) {
@@ -26,6 +27,13 @@ void SetupEEPROM() {
     EEPROM.put(EEPROM_ADDRESS_POLIV_DURATION, poliv_duration);
   }
 
+  if (EEPROM.read(EEPROM_ADDRESS_TEMP_FOR_POLIV_DURATION) != 255) {
+    EEPROM.get(EEPROM_ADDRESS_TEMP_FOR_POLIV_DURATION, temp_water_for_run_pump);
+  }
+  else {
+    EEPROM.put(EEPROM_ADDRESS_TEMP_FOR_POLIV_DURATION, temp_water_for_run_pump);
+  }
+
   ParsePolivData();
 }
 
@@ -39,6 +47,10 @@ void SavePolivTime() {
 
 void SavePolivDuration() {
   EEPROM.put(EEPROM_ADDRESS_POLIV_DURATION, poliv_duration);
+}
+
+void saveTempWaterForRunPump() {
+  EEPROM.put(EEPROM_ADDRESS_TEMP_FOR_POLIV_DURATION, temp_water_for_run_pump);
 }
 
 void ParsePolivData() {

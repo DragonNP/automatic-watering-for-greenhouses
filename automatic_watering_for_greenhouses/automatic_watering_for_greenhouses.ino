@@ -3,7 +3,7 @@
 #include <LCD_1602_RUS_ALL.h>
 
 // SETTINGS
-#define DHT_PIN A1 // Pin for DHT11 sensor
+#define DHT_PIN A1 // Пин для DHT11 датчика
 #define PUMP_PIN 1 // Пин для помпы (реле)
 #define BUCK_TEMP_PIN A2 // Пин для dallas датчика температуры
 #define ENCODER_1_PIN 3 // Первый пин для энкодера
@@ -21,6 +21,8 @@ bool edit_mode = false;
 bool started_poliv = false;
 bool poliv = true;
 
+short temp_water_for_run_pump = 20;
+
 uint32_t tmr_poliv_time;
 uint32_t poliv_time = 10000;
 uint8_t poliv_time_day;
@@ -36,6 +38,7 @@ uint8_t poliv_duration_minutes;
 uint8_t poliv_duration_seconds;
 
 void setup(){
+  Serial.println(9600);
   lcd.init();
   lcd.backlight();
 
@@ -50,9 +53,9 @@ void loop() {
   if (curr_page == 0)
     checkDisableLCD();
   else
-    checkLCD();
+    updateLCD();
 
-  RequestTempFromDallas();
+  requestTempFromDallas();
   CheckStartPoliv();
   CheckStopPoliv();
 }
@@ -76,34 +79,31 @@ void checkDisableLCD() {
   }
 }
 
-void checkLCD() {
+void updateLCD() {
   static uint32_t tmr_lcd;
-  if (millis() - tmr_lcd >= 1000 || curr_page == 2 || curr_page == 3 || force_update) {
+  if (millis() - tmr_lcd >= 1000 || force_update) {
     tmr_lcd = millis();
-    update_lcd();
-  }
-}
 
-void update_lcd() {
-  if (curr_page == 1) {
-    if (force_update) {
-      ShowPage1();
-      force_update = false;
+    if (curr_page == 1) {
+      if (force_update) {
+        ShowPage1();
+        force_update = false;
+      }
+      else {
+        UpdatePage1();
+      }
     }
-    else {
-      UpdatePage1();
+    else if (curr_page == 2) {
+      if (force_update) {
+        ShowPage2();
+        force_update = false;
+      }
     }
-  }
-  else if (curr_page == 2) {
-    if (force_update) {
-      ShowPage2();
-      force_update = false;
-    }
-  }
-  else if (curr_page == 3) {
-    if (force_update) {
-      ShowPage3();
-      force_update = false;
+    else if (curr_page == 3) {
+      if (force_update) {
+        ShowPage3();
+        force_update = false;
+      }
     }
   }
 }

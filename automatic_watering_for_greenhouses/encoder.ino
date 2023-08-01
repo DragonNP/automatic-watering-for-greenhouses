@@ -9,6 +9,8 @@ void checkEncoder() {
     tmr_lcd_dsb = millis();
 
     if (curr_page == 2) LeftPage2();
+
+    if (curr_page == 3) LeftPage3();
     if (curr_page == 3) TurnPage3();
 
     if (curr_page != 0 && !edit_mode) PrevPage();
@@ -19,6 +21,8 @@ void checkEncoder() {
     tmr_lcd_dsb = millis();
 
     if (curr_page == 2) RightPage2();
+
+    if (curr_page == 3) RightPage3();
     if (curr_page == 3) TurnPage3();
 
     if (curr_page != 0 && !edit_mode) NextPage();
@@ -29,6 +33,7 @@ void checkEncoder() {
     tmr_lcd_dsb = millis();
 
     if (curr_page == 2) ClickPage2();
+
     if (curr_page == 3) ClickPage3();
 
     if (curr_page == 0) enableLCD();
