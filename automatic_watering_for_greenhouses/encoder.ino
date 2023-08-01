@@ -1,6 +1,6 @@
 #include <EncButton2.h>
 
-EncButton2<EB_ENCBTN> enc(INPUT, 3, 2, 0);  // энкодер с кнопкой <A, B, KEY>
+EncButton2<EB_ENCBTN> enc(INPUT, ENCODER_1_PIN, ENCODER_2_PIN, ENCODER_BUTTON_PIN);  // энкодер с кнопкой <A, B, KEY>
 
 void checkEncoder() {
   enc.tick();

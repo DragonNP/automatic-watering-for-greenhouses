@@ -4,8 +4,11 @@
 
 // SETTINGS
 #define DHT_PIN A1 // Pin for DHT11 sensor
-#define PUMP_PIN 1 // Pin
-#define BUCK_TEMP_PIN A2 // Pin
+#define PUMP_PIN 1 // Пин для помпы (реле)
+#define BUCK_TEMP_PIN A2 // Пин для dallas датчика температуры
+#define ENCODER_1_PIN 3 // Первый пин для энкодера
+#define ENCODER_2_PIN 2 // Первый пин для энкодера
+#define ENCODER_BUTTON_PIN 0 // Пин на котором кнопка энкодера
 
 LCD_1602_RUS lcd(0x3f, 20, 4);
 
@@ -13,7 +16,6 @@ uint32_t tmr_lcd_dsb;
 uint8_t curr_page = 1;
 bool force_update = true;
 
-uint32_t btn_press;
 bool edit_mode = false;
 
 bool started_poliv = false;
