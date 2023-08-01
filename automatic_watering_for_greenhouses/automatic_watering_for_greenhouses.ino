@@ -49,9 +49,8 @@ void setup(){
 void loop() {
   checkEncoder();
 
-  if (curr_page == 0)
+  if (curr_page != 0)
     checkDisableLCD();
-  else
     updateLCD();
 
   requestTempFromDallas();

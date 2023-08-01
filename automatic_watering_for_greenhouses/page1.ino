@@ -27,11 +27,11 @@ void UpdatePage1() {
 
   short state = getStatePump();
   if (state == 0)
-    lcd.print("POLIVAYU       ");
+    lcd.print("ПOLUBAYU       ");
   else if (state == 1)
     lcd.print(format_time_for_lcd(GetRemainingPoliv()));
   else if (state == 2)
-    lcd.print("VODA XOLODHAYA ");
+    lcd.print("BOДA XOLODHAYA ");
   else
     lcd.print("ERROR!!!!      ");
 }
