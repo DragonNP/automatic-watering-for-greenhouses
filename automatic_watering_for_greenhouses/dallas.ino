@@ -1,4 +1,3 @@
-
 #include <microDS18B20.h>
 
 MicroDS18B20<BUCK_TEMP_PIN> dallas;

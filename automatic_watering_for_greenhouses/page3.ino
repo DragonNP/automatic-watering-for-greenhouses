@@ -87,5 +87,5 @@ void TurnPage3() {
     lcd.print("BЫKЛ.");
     lcd.setCursor(11,2);
   }
-  SavePoliv();
+  save_poliv_state();
 }

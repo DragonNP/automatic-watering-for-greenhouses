@@ -4,7 +4,7 @@
 
 // SETTINGS
 #define DHT_PIN A1 // Пин для DHT11 датчика
-#define PUMP_PIN 1 // Пин для помпы (реле)
+#define PUMP_PIN 4 // Пин для помпы (реле)
 #define BUCK_TEMP_PIN A2 // Пин для dallas датчика температуры
 #define ENCODER_1_PIN 3 // Первый пин для энкодера
 #define ENCODER_2_PIN 2 // Первый пин для энкодера
@@ -21,17 +21,20 @@ bool edit_mode = false;
 bool started_poliv = false;
 bool poliv = true;
 
-short temp_water_for_run_pump = 20;
+short temp_water_for_run_pump;
 
-uint32_t tmr_poliv_time;
-uint32_t poliv_time = 10000;
+uint32_t tmr_check_pump;
+uint32_t tmr_check_sensors;
+
+uint32_t next_time_start_pump;
+uint32_t poliv_time;
 uint8_t poliv_time_day;
 uint8_t poliv_time_hour;
 uint8_t poliv_time_minutes;
 uint8_t poliv_time_seconds;
 
 uint32_t tmr_poliv_duration;
-uint32_t poliv_duration = 4000;
+uint32_t poliv_duration;
 uint8_t poliv_duration_day;
 uint8_t poliv_duration_hour;
 uint8_t poliv_duration_minutes;
@@ -41,6 +44,7 @@ void setup(){
   lcd.init();
   lcd.backlight();
 
+  setupDS3231();
   SetupDHT();
   SetupPump();
   SetupEEPROM();
@@ -50,12 +54,19 @@ void loop() {
   checkEncoder();
 
   if (curr_page != 0)
-    checkDisableLCD();
+    timerForDisableLCD();
     updateLCD();
 
-  requestTempFromDallas();
-  CheckStartPoliv();
-  CheckStopPoliv();
+  if (millis() - tmr_check_pump >= 1000) {
+    tmr_check_pump = millis();
+    CheckStartPoliv();
+    CheckStopPoliv();
+  }
+
+  if (millis() - tmr_check_sensors >= 1000) {
+    tmr_check_sensors = millis();
+    requestTempFromDallas();
+  }
 }
 
 void enableLCD() {
@@ -67,7 +78,7 @@ void enableLCD() {
   lcd.backlight();
 }
 
-void checkDisableLCD() {
+void timerForDisableLCD() {
   if (millis() - tmr_lcd_dsb >= 10000) {
     curr_page = 0;
     tmr_lcd_dsb = millis();
@@ -79,6 +90,7 @@ void checkDisableLCD() {
 
 void updateLCD() {
   static uint32_t tmr_lcd;
+
   if (millis() - tmr_lcd >= 1000 || force_update) {
     tmr_lcd = millis();
 
@@ -105,7 +117,6 @@ void updateLCD() {
     }
   }
 }
-
 
 void NextPage() {
   curr_page++;

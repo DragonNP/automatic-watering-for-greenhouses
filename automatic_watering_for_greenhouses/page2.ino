@@ -10,7 +10,7 @@ void ShowPage2() {
   lcd.setCursor(0,2);
   lcd.print("Ha npoтяжeнuu:");
   lcd.setCursor(0,3);
-  lcd.print(format_time_for_lcd(poliv_duration));
+  lcd.print(format_time_for_lcd(poliv_duration / 1000));
 }
 
 void ClickPage2() {

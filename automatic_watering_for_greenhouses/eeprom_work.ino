@@ -4,6 +4,7 @@
 #define EEPROM_ADDRESS_POLIV_TIME 2
 #define EEPROM_ADDRESS_POLIV_DURATION 8
 #define EEPROM_ADDRESS_TEMP_FOR_POLIV_DURATION 14
+#define EEPROM_ADDRESS_TIME_FOR_START_PUMP 20
 
 void SetupEEPROM() {
   if (EEPROM.read(EEPROM_ADDRESS_POLIV) != 255) {
@@ -34,14 +35,21 @@ void SetupEEPROM() {
     EEPROM.put(EEPROM_ADDRESS_TEMP_FOR_POLIV_DURATION, temp_water_for_run_pump);
   }
 
-  ParsePolivData();
+  if (EEPROM.read(EEPROM_ADDRESS_TIME_FOR_START_PUMP) != 255) {
+    EEPROM.get(EEPROM_ADDRESS_TIME_FOR_START_PUMP, next_time_start_pump);
+  }
+  else {
+    next_time_start_pump = getCurrentUnixTime() + poliv_time;
+    EEPROM.put(EEPROM_ADDRESS_TIME_FOR_START_PUMP, next_time_start_pump);
+  }
 }
 
-void SavePoliv() {
+void save_poliv_state() {
   EEPROM.put(EEPROM_ADDRESS_POLIV, poliv);
 }
 
 void SavePolivTime() {
+  saveNextTimeForStartPump();
   EEPROM.put(EEPROM_ADDRESS_POLIV_TIME, poliv_time);
 }
 
@@ -53,14 +61,6 @@ void saveTempWaterForRunPump() {
   EEPROM.put(EEPROM_ADDRESS_TEMP_FOR_POLIV_DURATION, temp_water_for_run_pump);
 }
 
-void ParsePolivData() {
-  poliv_time_day = poliv_time / 86400 / 1000;
-  poliv_time_hour = poliv_time / 3600 / 1000;
-  poliv_time_minutes = poliv_time / 60 / 1000;
-  poliv_time_seconds = poliv_time / 1000;
-
-  poliv_duration_day = poliv_duration / 86400 / 1000;
-  poliv_duration_hour = poliv_duration / 3600 / 1000;
-  poliv_duration_minutes = poliv_duration / 60 / 1000;
-  poliv_duration_seconds = poliv_duration / 1000;
+void saveNextTimeForStartPump() {
+  EEPROM.put(EEPROM_ADDRESS_TIME_FOR_START_PUMP, next_time_start_pump);
 }

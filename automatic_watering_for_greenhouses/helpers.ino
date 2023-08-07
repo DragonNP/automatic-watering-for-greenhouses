@@ -1,6 +1,5 @@
 String format_time_for_lcd(uint32_t tmr) {
   String result = "";
-  tmr = tmr / 1000;
 
   int day = tmr / 86400;
   tmr = tmr % 86400;
@@ -75,8 +74,7 @@ void save_poliv() {
   poliv_time += poliv_time_hour * 3600;
   poliv_time += poliv_time_minutes * 60;
   poliv_time += poliv_time_seconds;
-  poliv_time *= 1000;
-  tmr_poliv_time = millis();
+  next_time_start_pump = getCurrentUnixTime() + poliv_time;
   SavePolivTime();
 
   poliv_duration = 0;
